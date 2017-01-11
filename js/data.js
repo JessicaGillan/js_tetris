@@ -49,10 +49,31 @@ TETRIS.data = (function() {
     if (exports.piece.coreCoord.y < exports.boardEdges.bottom) {
       exports.piece.coreCoord.y += 1;
       exports.piece.updateCells();
+
+      if (collision(exports.piece.cells)) {
+        exports.piece.coreCoord.y -= 1;
+        exports.piece.updateCells();
+
+        return false
+      }
+
       return true;
     } else {
       return false;
     }
+  };
+
+  var collision = function collision(cells) {
+    var collide = false;
+    for (var i = 0; i < cells.length; i++) {
+      var cellKey = cells[i].x + "_" + cells[i].y;
+
+      if (TETRIS.data.board[cellKey]) {
+        if (TETRIS.data.board[cellKey].value) collide = true;
+      }
+    }
+
+    return collide;
   };
 
   var newBoard = function newBoard(size) {
@@ -68,17 +89,38 @@ TETRIS.data = (function() {
     return grid;
   };
 
- // TODO Change this back to Coord parameter, delete line 24, remove from exports
-  exports.updateCell = function updateCell(x,y,v) {
-    var coord = new Coord(x,y,v);
+  var updateBoard = function updateBoard() {
+    for (var i = 0; i < TETRIS.data.piece.cells.length; i++) {
+      updateCell(TETRIS.data.piece.cells[i]);
+    }
+  }
+
+  var updateCell = function updateCell(coord) {
     var cell = coord.x + "_" + coord.y;
-    if (this.board[cell], coord.value) {
-      this.board[cell] = coord;
+    if (TETRIS.data.board[cell], coord.value) {
+      TETRIS.data.board[cell] = coord;
       return true;
     } else {
       return false;
     }
   };
+
+  var checkForCompletedRows = function checkForCompletedRows() {
+    var fullRow, fullRows = [];
+
+    for (var r = 0; r < TETRIS.data.boardEdges.bottom + 1; r++) {
+      fullRow = true;
+      for (var c = 0; c < TETRIS.data.boardEdges.right + 1; c++) {
+          if (!this.board[r + "_" + c]) fullRow = false;
+      }
+      if (fullRow) {
+        console.log("full row!!!");
+        fullRows.push(r);
+      }
+    }
+
+    return fullRows;
+  }
 
   exports.piece = null;
 
@@ -92,7 +134,15 @@ TETRIS.data = (function() {
   };
 
   exports.hitBottom = function hitBottom() {
-    
+    // move current into board
+    updateBoard();
+
+    // TODO: check for row complete
+    // var fullRows = checkForCompletedRows();
+    // shiftBoard(fullRows);
+
+    // add new piece
+    this.addPiece();
   };
 
   exports.init = function init(boardSize) {

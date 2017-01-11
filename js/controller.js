@@ -11,13 +11,16 @@ TETRIS.controller = (function(data,view) {
 
   var movePieceDown = function() {
     if (data.movePieceDown()) {
+      console.log("moving down");
       view.movePieceDown();
     } else {
-      data.hitBottom();
+      console.log("hit Bottom!");
+      var newPiece = data.hitBottom();
+      view.addPiece(data.piece);
     }
   };
 
-  setInterval( movePieceDown, 500);
+  setInterval( movePieceDown, 250);
 
 
 
