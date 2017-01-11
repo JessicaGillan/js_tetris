@@ -17,10 +17,10 @@ TETRIS.data = (function() {
     this.cells = array;
   };
 
-  var shapes = {
+  var SHAPES = {
     o: new Shape([[0,0],[1, 0],[0, -1], [1,-1]], "yellow"),
     i: new Shape([[0,0],[0,-1],[0, -2], [0,-3]], "cyan"),
-    s: new Shape([[0,0],[0, 1],[1, -1], [2,-1]], "red"),
+    s: new Shape([[0,0],[1, 0],[1, -1], [2,-1]], "red"),
     z: new Shape([[0,0],[1, 0],[-1,-1],[0,-1]], "green"),
     l: new Shape([[0,0],[1, 0],[0, -1],[0,-2]], "orange"),
     j: new Shape([[0,0],[1, 0],[1, -1],[1,-2]], "pink"),
@@ -42,6 +42,10 @@ TETRIS.data = (function() {
     this.cells = this.getCells(startingCoord);
   };
 
+  exports.movePieces = function movePieces() {
+
+  };
+
   var newBoard = function newBoard(size) {
     var grid = {};
     for(var r = 0; r < size; r++) {
@@ -49,6 +53,9 @@ TETRIS.data = (function() {
         grid[r + "_" + c] = new Coord(r,c);
       }
     }
+
+    TETRIS.data.boardEdges = { left: 0, right: size, top: 0, bottom: size };
+
     return grid;
   };
 
@@ -64,9 +71,19 @@ TETRIS.data = (function() {
     }
   };
 
+  exports.pieces = [];
+
+  exports.addPiece = function addPiece() {
+    var keys = Object.keys(SHAPES);
+    var key = keys[Math.floor(Math.random() * keys.length)];
+
+    this.pieces.push(new Piece((new Coord(9,0)), SHAPES[key], SHAPES[key].color));
+
+    return this.pieces;
+  };
+
   exports.init = function init(boardSize) {
     exports.board = newBoard(boardSize);
-    exports.piece = new Piece((new Coord(10,0)), shapes.o, "purple");
   };
 
   return exports;
