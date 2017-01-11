@@ -15,33 +15,32 @@ TETRIS.data = (function() {
     this.color = color;
     this.core = new Coord(0,0,this.color);
     this.cells = array;
-  }
+  };
 
   var shapes = {
-    o: new Shape([[1,0],[0,-1],[1,-1]], "yellow"), //[0,0],
-    i:"",
-    s:"",
-    z:"",
-    l:"",
-    j:"",
-    t:""
-  }
+    o: new Shape([[0,0],[1, 0],[0, -1], [1,-1]], "yellow"),
+    i: new Shape([[0,0],[0,-1],[0, -2], [0,-3]], "cyan"),
+    s: new Shape([[0,0],[0, 1],[1, -1], [2,-1]], "red"),
+    z: new Shape([[0,0],[1, 0],[-1,-1],[0,-1]], "green"),
+    l: new Shape([[0,0],[1, 0],[0, -1],[0,-2]], "orange"),
+    j: new Shape([[0,0],[1, 0],[1, -1],[1,-2]], "pink"),
+    t: new Shape([[0,0],[-1,-1],[0,-1],[1,-1]], "purple")
+  };
 
   var Piece = function Piece(startingCoord, shape, color) {
-    var piece = [];
-    color = color || "grey";
-    startingCoord.value = color;
-
-    piece.push(startingCoord)
-
-    var i = shape.cells.length;
-    while (i) {
-      piece.push( new Coord(startingCoord.x + shape.cells[i-1][0], startingCoord.y + shape.cells[i-1][1], color) );
-      i--;
-    }
-
-    return piece;
-  }
+    this.getCells = function getCells(coreCoord) {
+      var array = [];
+      for (var i = 0; i < shape.cells.length; i++) {
+        array.push(new Coord(
+          coreCoord.x + shape.cells[i][0],
+          coreCoord.y + shape.cells[i][1],
+          color
+        ));
+      }
+      return array;
+    };
+    this.cells = this.getCells(startingCoord);
+  };
 
   var newBoard = function newBoard(size) {
     var grid = {};

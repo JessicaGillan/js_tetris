@@ -4,5 +4,6 @@ TETRIS.controller = (function(data) {
 
   // Run Initialization
   data.init(10);
+  view.renderBoard(data.board);
 
 })(TETRIS.data);
