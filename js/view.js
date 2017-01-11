@@ -25,7 +25,7 @@ TETRIS.view = (function() {
 
     two.update();
   };
-  exports.movePieces = function() {
+  exports.movePieceDown = function() {
     group.translation.y += CELL_SIDE;
     two.update();
   };

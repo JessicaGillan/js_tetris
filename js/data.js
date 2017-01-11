@@ -45,10 +45,13 @@ TETRIS.data = (function() {
     this.color = color;
   };
 
-  exports.movePieces = function movePieces() {
-    for (var i = 0; i < exports.pieces.length; i++) {
-      exports.pieces[i].coreCoord.y += 1;
-      exports.pieces[i].cells = exports.pieces[i].updateCells();
+  exports.movePieceDown = function movePieces() {
+    if (exports.piece.coreCoord.y < exports.boardEdges.bottom) {
+      exports.piece.coreCoord.y += 1;
+      exports.piece.updateCells();
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -60,7 +63,7 @@ TETRIS.data = (function() {
       }
     }
 
-    TETRIS.data.boardEdges = { left: 0, right: size, top: 0, bottom: size };
+    TETRIS.data.boardEdges = { left: 0, right: size - 1, top: 0, bottom: size - 1 };
 
     return grid;
   };
@@ -77,15 +80,19 @@ TETRIS.data = (function() {
     }
   };
 
-  exports.pieces = [];
+  exports.piece = null;
 
   exports.addPiece = function addPiece() {
     var keys = Object.keys(SHAPES);
     var key = keys[Math.floor(Math.random() * keys.length)];
 
-    this.pieces.push(new Piece((new Coord(9,0)), SHAPES[key], SHAPES[key].color));
+    this.piece = new Piece((new Coord(9,0)), SHAPES[key], SHAPES[key].color);
 
-    return this.pieces;
+    return this.piece;
+  };
+
+  exports.hitBottom = function hitBottom() {
+    
   };
 
   exports.init = function init(boardSize) {

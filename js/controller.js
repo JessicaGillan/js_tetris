@@ -7,14 +7,17 @@ TETRIS.controller = (function(data,view) {
   view.renderBoard(data.board);
 
   data.addPiece();
-  view.addPiece(data.pieces[0]);
+  view.addPiece(data.piece);
 
-  var movePieces = function() {
-    data.movePieces();
-    view.movePieces();
-  }
+  var movePieceDown = function() {
+    if (data.movePieceDown()) {
+      view.movePieceDown();
+    } else {
+      data.hitBottom();
+    }
+  };
 
-  setInterval( movePieces, 500);
+  setInterval( movePieceDown, 500);
 
 
 
