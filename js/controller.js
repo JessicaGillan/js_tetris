@@ -1,7 +1,8 @@
 var TETRIS = TETRIS || {};
-TETRIS.controller = (function(model) {
+TETRIS.controller = (function(data) {
   'use strict';
 
-  model.init(10);
+  // Run Initialization
+  data.init(10);
 
-})(TETRIS.model);
+})(TETRIS.data);
