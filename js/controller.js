@@ -4,6 +4,10 @@ TETRIS.controller = (function(data,view) {
 
   // Run Initialization
   data.init(20);
+  view.init({
+    keydown: TETRIS.data.startkey,
+    keyup: TETRIS.data.stopkey, 
+  });
   view.renderBoard(data.board);
 
   data.addPiece();

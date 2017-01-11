@@ -9,6 +9,23 @@ TETRIS.view = (function() {
   two.appendTo(canvas);
   var group;
 
+  exports.init = function init(listeners) {
+    this.addListeners(listeners);
+  };
+
+  exports.addListeners = function(listeners) {
+    listeners = listeners || {};
+    var _this = this;
+    if (listeners.keydown) {
+      document.body.addEventListener('keydown', function(e) {
+        listeners.keydown(e.which);
+      });
+      document.body.addEventListener('keyup', function(e) {
+        listeners.keyup(e.which);
+      });
+    }
+  };
+
   exports.renderBoard = function renderBoard(board) {
     for (var coord in board) {
       drawSquare(board[coord]);

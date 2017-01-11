@@ -2,6 +2,7 @@ var TETRIS = TETRIS || {};
 TETRIS.data = (function() {
   "use strict";
   var exports = {};
+  exports.keys = {};
 
   var Coord = function Coord(x,y,value) {
     this.x = x;
@@ -54,13 +55,69 @@ TETRIS.data = (function() {
         exports.piece.coreCoord.y -= 1;
         exports.piece.updateCells();
 
-        return false
+        return false;
       }
 
       return true;
     } else {
       return false;
     }
+  };
+  exports.movePieceLeft = function movePieces() {
+    console.log("moving left")
+    if (exports.piece.coreCoord.x < exports.boardEdges.left) {
+      exports.piece.coreCoord.x -= 1;
+      exports.piece.updateCells();
+
+      if (collision(exports.piece.cells)) {
+        exports.piece.coreCoord.x += 1;
+        exports.piece.updateCells();
+
+        return false;
+      }
+
+      return true;
+    } else {
+      return false;
+    }
+  };
+  exports.movePieceRight = function movePieces() {
+    if (exports.piece.coreCoord.x < exports.boardEdges.right) {
+      exports.piece.coreCoord.x += 1;
+      exports.piece.updateCells();
+
+      if (collision(exports.piece.cells)) {
+        exports.piece.coreCoord.x -= 1;
+        exports.piece.updateCells();
+
+        return false;
+      }
+
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  var startKey = function startKey(key){
+    TETRIS.data.keys[key] = true;
+  };
+  var stopKey = function stopKey(key){
+    TETRIS.data.keys[key] = false;
+  };
+  var movePiece = function movePiece(){
+    if (this.keys[40]) { // down arrow
+      // exports.movePieceDown();
+    }
+    if (this.keys[39]) { // right arrow
+      exports.movePieceRight();
+    }
+    if (this.keys[37]) { // left arrow
+      exports.movePieceLeft();
+    }
+    //  if(this.keys[32]){ // spacebar
+    //  }
+
   };
 
   var collision = function collision(cells) {
@@ -93,7 +150,7 @@ TETRIS.data = (function() {
     for (var i = 0; i < TETRIS.data.piece.cells.length; i++) {
       updateCell(TETRIS.data.piece.cells[i]);
     }
-  }
+  };
 
   var updateCell = function updateCell(coord) {
     var cell = coord.x + "_" + coord.y;
