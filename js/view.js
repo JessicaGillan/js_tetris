@@ -14,6 +14,7 @@ TETRIS.view = (function() {
   };
 
   exports.addListeners = function(listeners) {
+    console.log("adding listeners", listeners)
     listeners = listeners || {};
     var _this = this;
     if (listeners.keydown) {
@@ -44,6 +45,14 @@ TETRIS.view = (function() {
   };
   exports.movePieceDown = function() {
     group.translation.y += CELL_SIDE;
+    two.update();
+  };
+  exports.movePieceLeft = function() {
+    group.translation.x -= CELL_SIDE;
+    two.update();
+  };
+  exports.movePieceRight = function() {
+    group.translation.x += CELL_SIDE;
     two.update();
   };
   var drawSquare = function(coord) {

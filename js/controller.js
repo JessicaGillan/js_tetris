@@ -6,14 +6,19 @@ TETRIS.controller = (function(data,view) {
   data.init(20);
   view.init({
     keydown: TETRIS.data.startkey,
-    keyup: TETRIS.data.stopkey, 
+    keyup: TETRIS.data.stopkey,
   });
   view.renderBoard(data.board);
 
   data.addPiece();
   view.addPiece(data.piece);
 
-  var movePieceDown = function() {
+  var gameLoop = function() {
+    var direction = data.movePiece();
+    if (direction === "right")
+      view.movePieceRight();
+    if (direction === "left")
+      view.movePieceLeft();
     if (data.movePieceDown()) {
       console.log("moving down");
       view.movePieceDown();
@@ -24,7 +29,7 @@ TETRIS.controller = (function(data,view) {
     }
   };
 
-  setInterval( movePieceDown, 250);
+  setInterval( gameLoop, 250);
 
 
 

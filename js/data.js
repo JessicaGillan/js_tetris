@@ -64,8 +64,8 @@ TETRIS.data = (function() {
     }
   };
   exports.movePieceLeft = function movePieces() {
-    console.log("moving left")
-    if (exports.piece.coreCoord.x < exports.boardEdges.left) {
+    console.log("moving left");
+    if (exports.piece.coreCoord.x > exports.boardEdges.left) {
       exports.piece.coreCoord.x -= 1;
       exports.piece.updateCells();
 
@@ -82,6 +82,7 @@ TETRIS.data = (function() {
     }
   };
   exports.movePieceRight = function movePieces() {
+    console.log("moving right");
     if (exports.piece.coreCoord.x < exports.boardEdges.right) {
       exports.piece.coreCoord.x += 1;
       exports.piece.updateCells();
@@ -99,22 +100,25 @@ TETRIS.data = (function() {
     }
   };
 
-  var startKey = function startKey(key){
+  exports.startkey = function startkey(key){
     TETRIS.data.keys[key] = true;
   };
-  var stopKey = function stopKey(key){
+  exports.stopkey = function stopkey(key){
     TETRIS.data.keys[key] = false;
   };
-  var movePiece = function movePiece(){
+  exports.movePiece = function movePiece(){
     if (this.keys[40]) { // down arrow
       // exports.movePieceDown();
     }
     if (this.keys[39]) { // right arrow
-      exports.movePieceRight();
+      if (exports.movePieceRight())
+        return "right";
     }
     if (this.keys[37]) { // left arrow
-      exports.movePieceLeft();
+      if (exports.movePieceLeft())
+        return "left";
     }
+    return false;
     //  if(this.keys[32]){ // spacebar
     //  }
 
@@ -177,7 +181,7 @@ TETRIS.data = (function() {
     }
 
     return fullRows;
-  }
+  };
 
   exports.piece = null;
 
