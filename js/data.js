@@ -28,22 +28,28 @@ TETRIS.data = (function() {
   };
 
   var Piece = function Piece(startingCoord, shape, color) {
-    this.getCells = function getCells(coreCoord) {
+    this.coreCoord = startingCoord;
+    this.updateCells = function updateCells() {
       var array = [];
       for (var i = 0; i < shape.cells.length; i++) {
         array.push(new Coord(
-          coreCoord.x + shape.cells[i][0],
-          coreCoord.y + shape.cells[i][1],
+          this.coreCoord.x + shape.cells[i][0],
+          this.coreCoord.y + shape.cells[i][1],
           color
         ));
       }
-      return array;
+      this.cells = array;
     };
-    this.cells = this.getCells(startingCoord);
+    this.updateCells();
+    this.transformation = shape.cells;
+    this.color = color;
   };
 
   exports.movePieces = function movePieces() {
-
+    for (var i = 0; i < exports.pieces.length; i++) {
+      exports.pieces[i].coreCoord.y += 1;
+      exports.pieces[i].cells = exports.pieces[i].updateCells();
+    }
   };
 
   var newBoard = function newBoard(size) {
