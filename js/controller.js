@@ -29,7 +29,7 @@ TETRIS.controller = (function(data,view) {
     }
   };
 
-  setInterval( gameLoop, 250);
+  setInterval( gameLoop, 150);
 
 
 

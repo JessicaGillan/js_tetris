@@ -14,7 +14,7 @@ TETRIS.view = (function() {
   };
 
   exports.addListeners = function(listeners) {
-    console.log("adding listeners", listeners)
+    console.log("adding listeners", listeners);
     listeners = listeners || {};
     var _this = this;
     if (listeners.keydown) {

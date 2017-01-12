@@ -172,7 +172,7 @@ TETRIS.data = (function() {
     for (var r = 0; r < TETRIS.data.boardEdges.bottom + 1; r++) {
       fullRow = true;
       for (var c = 0; c < TETRIS.data.boardEdges.right + 1; c++) {
-          if (!this.board[r + "_" + c]) fullRow = false;
+          if (!TETRIS.data.board[r + "_" + c]) fullRow = false;
       }
       if (fullRow) {
         console.log("full row!!!");
@@ -199,7 +199,7 @@ TETRIS.data = (function() {
     updateBoard();
 
     // TODO: check for row complete
-    // var fullRows = checkForCompletedRows();
+    var fullRows = checkForCompletedRows();
     // shiftBoard(fullRows);
 
     // add new piece
