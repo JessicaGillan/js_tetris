@@ -2,7 +2,7 @@ var TETRIS = TETRIS || {};
 TETRIS.Controller = (function(Data,View) {
   'use strict';
 
-  var SPEED = 150;
+  var SPEED = 300;
 
   var _gameLoop = function() {
     var direction = Data.keyPressMovePiece();
@@ -18,8 +18,11 @@ TETRIS.Controller = (function(Data,View) {
     if (Data.movePieceDown()) {
       View.movePieceDown();
     } else {
-      console.log("hit Bottom!");
-      var newPiece = Data.hitBottom();
+      // if we have full Rows
+      if (Data.hitBottom()){
+        View.renderBoard(Data.getBoard());
+        View.updateScore(Data.getScore());
+      }
       View.addPiece(Data.getActivePiece());
     }
   };
@@ -27,7 +30,7 @@ TETRIS.Controller = (function(Data,View) {
 
   var init = function init() {
     // Run Initialization
-    Data.init(20);
+    Data.init(10);
     View.init({
       keydown: Data.startKey,
       keyup: Data.stopKey,

@@ -4,10 +4,11 @@ TETRIS.View = (function() {
   var CELL_SIDE = 30;
 
   var group, two, canvas;
+  var score = document.getElementById('score');
 
 
   var _initTwo = function _initTwo() {
-    two = new Two({ fullscreen: true });
+    two = new Two({ width: 400, height: 600 });
     canvas = document.getElementById('canvas');
     two.appendTo(canvas);
     two.update();
@@ -49,12 +50,17 @@ TETRIS.View = (function() {
   };
 
   var renderBoard = function renderBoard(board) {
+    console.log("call to renderBoard");
     for (var coord in board) {
       _drawSquare(board[coord]);
     }
 
     two.update();
   };
+
+  var updateScore = function updateScore(num) {
+    score.innerText = "Score: " + num;
+  }
 
   var addPiece = function addPiece(piece) {
     group = two.makeGroup();
@@ -85,6 +91,7 @@ TETRIS.View = (function() {
             init: init,
             renderBoard: renderBoard,
             addPiece: addPiece,
+            updateScore: updateScore,
             movePieceRight: movePieceRight,
             movePieceLeft: movePieceLeft,
             movePieceDown: movePieceDown

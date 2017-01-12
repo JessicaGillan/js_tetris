@@ -5,7 +5,8 @@ TETRIS.Data = (function() {
   var keys = {},
       piece,
       board,
-      boardEdges;
+      boardEdges,
+      score = 0;
 
   // Constructors
 
@@ -24,13 +25,14 @@ TETRIS.Data = (function() {
   };
 
   var SHAPES = {
-    o: new Shape([[0,0],[1, 0],[0, -1], [1,-1]], "yellow"),
-    i: new Shape([[0,0],[0,-1],[0, -2], [0,-3]], "cyan"),
-    s: new Shape([[0,0],[1, 0],[1, -1], [2,-1]], "red"),
-    z: new Shape([[0,0],[1, 0],[-1,-1],[0,-1]], "green"),
-    l: new Shape([[0,0],[1, 0],[0, -1],[0,-2]], "orange"),
-    j: new Shape([[0,0],[1, 0],[1, -1],[1,-2]], "pink"),
-    t: new Shape([[0,0],[-1,-1],[0,-1],[1,-1]], "purple")
+    win: new Shape([[0,0],[1,0],[2,0], [3,0], [4,0], [5,0], [-1,0], [-2,0],[-3,0], [-4,0]], "yellow")
+    // o: new Shape([[0,0],[1, 0],[0, -1], [1,-1]], "yellow"),
+    // i: new Shape([[0,0],[0,-1],[0, -2], [0,-3]], "cyan"),
+    // s: new Shape([[0,0],[1, 0],[1, -1], [2,-1]], "red"),
+    // z: new Shape([[0,0],[1, 0],[-1,-1],[0,-1]], "green"),
+    // l: new Shape([[0,0],[1, 0],[0, -1],[0,-2]], "orange"),
+    // j: new Shape([[0,0],[1, 0],[1, -1],[1,-2]], "pink"),
+    // t: new Shape([[0,0],[-1,-1],[0,-1],[1,-1]], "purple")
   };
 
   var Piece = function Piece(startingCoord, shape, color) {
@@ -93,22 +95,59 @@ TETRIS.Data = (function() {
   };
 
   var _checkForCompletedRows = function _checkForCompletedRows() {
-    var fullRow, fullRows = [];
+    var fullRow, fullRows = [],
+        hitEmpty = false,
+        y = boardEdges.bottom - 1;
 
-    for (var r = 0; r < boardEdges.bottom; r++) {
+    while (!hitEmpty && y >= 0) {
+      hitEmpty = true;
       fullRow = true;
-      for (var c = 0; c < boardEdges.right; c++) {
+      for (var x = 0; x < boardEdges.right; x++) {
         // fullRow is false if there is an empty cell
-        if (!board[r + "_" + c]) fullRow = false;
+        if (!board[x + "_" + y].value) {
+          fullRow = false;
+        } else {
+          hitEmpty = false;
+        }
       }
       if (fullRow) {
         console.log("full row!!!");
-        fullRows.push(r);
+        fullRows.push(y);
       }
+      y--;
     }
 
     return fullRows;
   };
+
+  var _shiftBoard = function _shiftBoard(fullRows) {
+
+    var hitEmpty = false;
+    var currentY, nextY;
+
+    for (var fullI = 0; fullI < fullRows.length; fullI++) {
+      hitEmpty = false;
+
+      currentY = fullRows[fullI] + fullI;
+      nextY = currentY - 1;
+
+      while (!hitEmpty && (currentY >= 0)) {
+        hitEmpty = true
+        for (var x = 0; x < boardEdges.right; x++) {
+
+          if (board[x + "_" + nextY]) {
+            if (board[x + "_" + nextY].value) hitEmpty = false;
+
+            board[x + "_" + currentY].value = board[x + "_" + nextY].value;
+          } else {
+            board[x + "_" + currentY].value = null;
+          }
+        }
+        currentY = nextY;
+        nextY -= 1;
+      }
+    }
+  }
 
   var _collision = function _collision(cells) {
     var collide = false;
@@ -138,7 +177,7 @@ TETRIS.Data = (function() {
   };
 
   var _movePieceLeft = function _movePieceLeft() {
-    console.log("moving left");
+
     if (piece.leftMost.x > boardEdges.left) {
       piece.coreCoord.x -= 1;
       piece.updateCells();
@@ -157,7 +196,7 @@ TETRIS.Data = (function() {
   };
 
   var _movePieceRight = function _movePieceRight() {
-    console.log("moving right");
+
     if (piece.rightMost.x < (boardEdges.right - 1)) {
       piece.coreCoord.x += 1;
       piece.updateCells();
@@ -174,6 +213,12 @@ TETRIS.Data = (function() {
       return false;
     }
   };
+
+  var _increaseScore = function _increaseScore(amount) {
+    amount = amount || 1;
+    score += amount;
+    console.log(score);
+  }
 
   // Public Methods
 
@@ -225,8 +270,8 @@ TETRIS.Data = (function() {
   var addPiece = function addPiece() {
     var keys = Object.keys(SHAPES);
     var key = keys[Math.floor(Math.random() * keys.length)];
-
-    piece = new Piece((new Coord(9,0)), SHAPES[key], SHAPES[key].color);
+    var middle = Math.floor(boardEdges.right/2) - 1;
+    piece = new Piece((new Coord(middle,0)), SHAPES[key], SHAPES[key].color);
 
     return piece;
   };
@@ -235,21 +280,30 @@ TETRIS.Data = (function() {
     // move current into board
     _updateBoard();
 
-    // TODO: check for row complete
+    // Track and clear completed rows
     var fullRows = _checkForCompletedRows();
-    // shiftBoard(fullRows);
+    var num = fullRows.length;
+    if (num) {
+      _increaseScore(num);
+      _shiftBoard(fullRows);
+    }
 
     // add new piece
     addPiece();
+
+    return !!num; // Indicate increased score
   };
 
   var getActivePiece = function getActivePiece() {
-    console.log(piece);
     return piece;
   }
 
   var getBoard = function getBoard() {
     return board;
+  }
+
+  var getScore = function getScore(){
+    return score;
   }
 
   var init = function init(boardSize) {
@@ -260,6 +314,7 @@ TETRIS.Data = (function() {
            init: init,
            getActivePiece: getActivePiece,
            getBoard: getBoard,
+           getScore: getScore,
            addPiece: addPiece,
            keyPressMovePiece: keyPressMovePiece,
            movePieceDown: movePieceDown,
