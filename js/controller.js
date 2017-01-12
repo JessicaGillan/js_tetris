@@ -4,7 +4,7 @@ TETRIS.Controller = (function(Data,View) {
 
   var SPEED = 150;
 
-  var gameLoop = function() {
+  var _gameLoop = function() {
     var direction = Data.keyPressMovePiece();
     if (direction === "right")
       View.movePieceRight();
@@ -33,7 +33,7 @@ TETRIS.Controller = (function(Data,View) {
     Data.addPiece();
     View.addPiece(Data.getActivePiece());
 
-    setInterval( gameLoop, SPEED);
+    setInterval( _gameLoop, SPEED);
   }
 
   return {

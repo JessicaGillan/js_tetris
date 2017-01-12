@@ -7,6 +7,8 @@ TETRIS.Data = (function() {
       board,
       boardEdges;
 
+  // Constructors
+
   var Coord = function Coord(x,y,value) {
     this.x = x;
     this.y = y;
@@ -49,12 +51,82 @@ TETRIS.Data = (function() {
     this.color = color;
   };
 
+  // Private Methods
+
+  var _setBoardEdges = function _setBoardEdges(size){
+    boardEdges = { left: 0, right: size, top: 0, bottom: size };
+  }
+
+  var _updateBoard = function _updateBoard() {
+    for (var i = 0; i < piece.cells.length; i++) {
+      _updateCell(piece.cells[i]);
+    }
+  };
+
+  var _updateCell = function _updateCell(coord) {
+    var cell = coord.x + "_" + coord.y;
+
+    if (board[cell]) { // if cell is on board
+      board[cell] = coord;
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  var _checkForCompletedRows = function _checkForCompletedRows() {
+    var fullRow, fullRows = [];
+
+    for (var r = 0; r < boardEdges.bottom; r++) {
+      fullRow = true;
+      for (var c = 0; c < boardEdges.right; c++) {
+        // fullRow is false if there is an empty cell
+        if (!board[r + "_" + c]) fullRow = false;
+      }
+      if (fullRow) {
+        console.log("full row!!!");
+        fullRows.push(r);
+      }
+    }
+
+    return fullRows;
+  };
+
+  var _collision = function _collision(cells) {
+    var collide = false;
+    for (var i = 0; i < cells.length; i++) {
+      var cellKey = cells[i].x + "_" + cells[i].y;
+
+      if (board[cellKey]) {
+        if (board[cellKey].value) collide = true;
+      }
+    }
+
+    return collide;
+  };
+
+  var _newBoard = function _newBoard(size) {
+    var grid = {};
+
+    for(var r = 0; r < size; r++) {
+      for(var c = 0; c < size; c++) {
+        grid[r + "_" + c] = new Coord(r,c);
+      }
+    }
+
+    _setBoardEdges(size);
+
+    return grid;
+  };
+
+  // Public Methods
+
   var movePieceDown = function movePieceDown() {
     if (piece.coreCoord.y < (boardEdges.bottom - 1)) {
       piece.coreCoord.y += 1;
       piece.updateCells();
 
-      if (collision(piece.cells)) {
+      if (_collision(piece.cells)) {
         piece.coreCoord.y -= 1;
         piece.updateCells();
 
@@ -73,7 +145,7 @@ TETRIS.Data = (function() {
       piece.coreCoord.x -= 1;
       piece.updateCells();
 
-      if (collision(piece.cells)) {
+      if (_collision(piece.cells)) {
         piece.coreCoord.x += 1;
         piece.updateCells();
 
@@ -92,7 +164,7 @@ TETRIS.Data = (function() {
       piece.coreCoord.x += 1;
       piece.updateCells();
 
-      if (collision(piece.cells)) {
+      if (_collision(piece.cells)) {
         piece.coreCoord.x -= 1;
         piece.updateCells();
 
@@ -131,72 +203,6 @@ TETRIS.Data = (function() {
 
   };
 
-  var collision = function collision(cells) {
-    var collide = false;
-    for (var i = 0; i < cells.length; i++) {
-      var cellKey = cells[i].x + "_" + cells[i].y;
-
-      if (board[cellKey]) {
-        if (board[cellKey].value) collide = true;
-      }
-    }
-
-    return collide;
-  };
-
-  var newBoard = function newBoard(size) {
-    var grid = {};
-
-    for(var r = 0; r < size; r++) {
-      for(var c = 0; c < size; c++) {
-        grid[r + "_" + c] = new Coord(r,c);
-      }
-    }
-
-    setBoardEdges(size);
-
-    return grid;
-  };
-
-  var setBoardEdges = function setBoardEdges(size){
-    boardEdges = { left: 0, right: size, top: 0, bottom: size };
-  }
-
-  var updateBoard = function updateBoard() {
-    for (var i = 0; i < piece.cells.length; i++) {
-      updateCell(piece.cells[i]);
-    }
-  };
-
-  var updateCell = function updateCell(coord) {
-    var cell = coord.x + "_" + coord.y;
-
-    if (board[cell]) { // if cell is on board
-      board[cell] = coord;
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  var checkForCompletedRows = function checkForCompletedRows() {
-    var fullRow, fullRows = [];
-
-    for (var r = 0; r < boardEdges.bottom; r++) {
-      fullRow = true;
-      for (var c = 0; c < boardEdges.right; c++) {
-        // fullRow is false if there is an empty cell
-          if (!board[r + "_" + c]) fullRow = false;
-      }
-      if (fullRow) {
-        console.log("full row!!!");
-        fullRows.push(r);
-      }
-    }
-
-    return fullRows;
-  };
-
   var addPiece = function addPiece() {
     var keys = Object.keys(SHAPES);
     var key = keys[Math.floor(Math.random() * keys.length)];
@@ -208,10 +214,10 @@ TETRIS.Data = (function() {
 
   var hitBottom = function hitBottom() {
     // move current into board
-    updateBoard();
+    _updateBoard();
 
     // TODO: check for row complete
-    var fullRows = checkForCompletedRows();
+    var fullRows = _checkForCompletedRows();
     // shiftBoard(fullRows);
 
     // add new piece
@@ -228,7 +234,7 @@ TETRIS.Data = (function() {
   }
 
   var init = function init(boardSize) {
-    board = newBoard(boardSize);
+    board = _newBoard(boardSize);
   };
 
   return {
