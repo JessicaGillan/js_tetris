@@ -25,14 +25,14 @@ TETRIS.Data = (function() {
   };
 
   var SHAPES = {
-    win: new Shape([[0,0],[1,0],[2,0], [3,0], [4,0], [5,0], [-1,0], [-2,0],[-3,0], [-4,0]], "yellow")
-    // o: new Shape([[0,0],[1, 0],[0, -1], [1,-1]], "yellow"),
-    // i: new Shape([[0,0],[0,-1],[0, -2], [0,-3]], "cyan"),
-    // s: new Shape([[0,0],[1, 0],[1, -1], [2,-1]], "red"),
-    // z: new Shape([[0,0],[1, 0],[-1,-1],[0,-1]], "green"),
-    // l: new Shape([[0,0],[1, 0],[0, -1],[0,-2]], "orange"),
-    // j: new Shape([[0,0],[1, 0],[1, -1],[1,-2]], "pink"),
-    // t: new Shape([[0,0],[-1,-1],[0,-1],[1,-1]], "purple")
+    // win: new Shape([[0,0],[1,0],[2,0], [3,0], [4,0], [5,0], [-1,0], [-2,0],[-3,0], [-4,0]], "yellow")
+    o: new Shape([[0,0],[1, 0],[0, -1], [1,-1]], "yellow"),
+    i: new Shape([[0,0],[0,-1],[0, -2], [0,-3]], "cyan"),
+    s: new Shape([[0,0],[1, 0],[1, -1], [2,-1]], "red"),
+    z: new Shape([[0,0],[1, 0],[-1,-1],[0,-1]], "green"),
+    l: new Shape([[0,0],[1, 0],[0, -1],[0,-2]], "orange"),
+    j: new Shape([[0,0],[1, 0],[1, -1],[1,-2]], "pink"),
+    t: new Shape([[0,0],[-1,-1],[0,-1],[1,-1]], "purple")
   };
 
   var Piece = function Piece(startingCoord, shape, color) {
@@ -73,8 +73,8 @@ TETRIS.Data = (function() {
 
   // Private Methods
 
-  var _setBoardEdges = function _setBoardEdges(size){
-    boardEdges = { left: 0, right: size, top: 0, bottom: size };
+  var _setBoardEdges = function _setBoardEdges(h,w){
+    boardEdges = { left: 0, right: w, top: 0, bottom: h };
   }
 
   var _updateBoard = function _updateBoard() {
@@ -162,16 +162,16 @@ TETRIS.Data = (function() {
     return collide;
   };
 
-  var _newBoard = function _newBoard(size) {
+  var _newBoard = function _newBoard(h,w) {
     var grid = {};
 
-    for(var r = 0; r < size; r++) {
-      for(var c = 0; c < size; c++) {
-        grid[r + "_" + c] = new Coord(r,c);
+    for(var y = 0; y < h; y++) {
+      for(var x = 0; x < w; x++) {
+        grid[x + "_" + y] = new Coord(x,y);
       }
     }
 
-    _setBoardEdges(size);
+    _setBoardEdges(h,w);
 
     return grid;
   };
@@ -222,13 +222,14 @@ TETRIS.Data = (function() {
 
   // Public Methods
 
-  var movePieceDown = function movePieceDown() {
+  var movePieceDown = function movePieceDown(by) {
+    by = by || 1;
     if (piece.coreCoord.y < (boardEdges.bottom - 1)) {
-      piece.coreCoord.y += 1;
+      piece.coreCoord.y += by;
       piece.updateCells();
 
       if (_collision(piece.cells)) {
-        piece.coreCoord.y -= 1;
+        piece.coreCoord.y -= by;
         piece.updateCells();
 
         return false;
@@ -250,7 +251,7 @@ TETRIS.Data = (function() {
 
   var keyPressMovePiece = function keyPressMovePiece(){
     if (keys[40]) { // down arrow
-      if (movePieceDown())
+      if (movePieceDown(3))
         return "down";
     }
     if (keys[39]) { // right arrow
@@ -306,8 +307,8 @@ TETRIS.Data = (function() {
     return score;
   }
 
-  var init = function init(boardSize) {
-    board = _newBoard(boardSize);
+  var init = function init(height, width) {
+    board = _newBoard(height, width);
   };
 
   return {

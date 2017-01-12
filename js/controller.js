@@ -30,7 +30,7 @@ TETRIS.Controller = (function(Data,View) {
 
   var init = function init() {
     // Run Initialization
-    Data.init(10);
+    Data.init(20, 15);
     View.init({
       keydown: Data.startKey,
       keyup: Data.stopKey,

@@ -8,7 +8,7 @@ TETRIS.View = (function() {
 
 
   var _initTwo = function _initTwo() {
-    two = new Two({ width: 400, height: 600 });
+    two = new Two({ width: 600, height: 800 });
     canvas = document.getElementById('canvas');
     two.appendTo(canvas);
     two.update();
