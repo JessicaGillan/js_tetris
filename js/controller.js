@@ -1,37 +1,45 @@
 var TETRIS = TETRIS || {};
-TETRIS.controller = (function(data,view) {
+TETRIS.Controller = (function(Data,View) {
   'use strict';
 
-  // Run Initialization
-  data.init(20);
-  view.init({
-    keydown: TETRIS.data.startkey,
-    keyup: TETRIS.data.stopkey,
-  });
-  view.renderBoard(data.board);
-
-  data.addPiece();
-  view.addPiece(data.piece);
+  var SPEED = 150;
 
   var gameLoop = function() {
-    var direction = data.movePiece();
+    var direction = Data.keyPressMovePiece();
     if (direction === "right")
-      view.movePieceRight();
+      View.movePieceRight();
     if (direction === "left")
-      view.movePieceLeft();
-    if (data.movePieceDown()) {
+      View.movePieceLeft();
+    if (Data.movePieceDown()) {
       console.log("moving down");
-      view.movePieceDown();
+      View.movePieceDown();
     } else {
       console.log("hit Bottom!");
-      var newPiece = data.hitBottom();
-      view.addPiece(data.piece);
+      var newPiece = Data.hitBottom();
+      View.addPiece(Data.getActivePiece());
     }
   };
 
-  setInterval( gameLoop, 150);
 
+  var init = function init() {
+    // Run Initialization
+    Data.init(20);
+    View.init({
+      keydown: Data.startKey,
+      keyup: Data.stopKey,
+    });
+    View.renderBoard(Data.getBoard());
 
+    Data.addPiece();
+    View.addPiece(Data.getActivePiece());
 
+    setInterval( gameLoop, SPEED);
+  }
 
-})(TETRIS.data, TETRIS.view);
+  return {
+          init: init
+         }
+
+})(TETRIS.Data, TETRIS.View);
+
+TETRIS.Controller.init();
