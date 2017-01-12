@@ -34,22 +34,40 @@ TETRIS.Data = (function() {
   };
 
   var Piece = function Piece(startingCoord, shape, color) {
-    this.coreCoord = startingCoord;
+    this.coreCoord = startingCoord; // Starting coord is the bottom most cell
+    this.leftMost = startingCoord;
+    this.rightMost = startingCoord;
+    this.topMost = startingCoord;
     this.updateCells = function updateCells() {
       var array = [];
       for (var i = 0; i < shape.cells.length; i++) {
-        array.push(new Coord(
-          this.coreCoord.x + shape.cells[i][0],
-          this.coreCoord.y + shape.cells[i][1],
-          color
-        ));
+        var newCoord = new Coord(
+                                  this.coreCoord.x + shape.cells[i][0],
+                                  this.coreCoord.y + shape.cells[i][1],
+                                  color
+                                );
+
+        this.updateEdges(newCoord);
+
+        array.push(newCoord);
       }
       this.cells = array;
     };
-    this.updateCells();
+
+
+    this.updateCells(); // Update the cells on creation
     this.transformation = shape.cells;
     this.color = color;
   };
+
+  Piece.prototype.updateEdges = function updateEdges(coord) {
+    if (coord.x < this.leftMost.x) {
+      this.leftMost = coord;
+    } else if (coord.x > this.rightMost.x) {
+      this.rightMost = coord;
+    }
+    if (coord.x > this.topMost.y) this.leftMost = coord;
+  }
 
   // Private Methods
 
@@ -119,29 +137,9 @@ TETRIS.Data = (function() {
     return grid;
   };
 
-  // Public Methods
-
-  var movePieceDown = function movePieceDown() {
-    if (piece.coreCoord.y < (boardEdges.bottom - 1)) {
-      piece.coreCoord.y += 1;
-      piece.updateCells();
-
-      if (_collision(piece.cells)) {
-        piece.coreCoord.y -= 1;
-        piece.updateCells();
-
-        return false;
-      }
-
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  var movePieceLeft = function movePieceLeft() {
+  var _movePieceLeft = function _movePieceLeft() {
     console.log("moving left");
-    if (piece.coreCoord.x > boardEdges.left) {
+    if (piece.leftMost.x > boardEdges.left) {
       piece.coreCoord.x -= 1;
       piece.updateCells();
 
@@ -158,14 +156,34 @@ TETRIS.Data = (function() {
     }
   };
 
-  var movePieceRight = function movePieceRight() {
+  var _movePieceRight = function _movePieceRight() {
     console.log("moving right");
-    if (piece.coreCoord.x < (boardEdges.right - 1)) {
+    if (piece.rightMost.x < (boardEdges.right - 1)) {
       piece.coreCoord.x += 1;
       piece.updateCells();
 
       if (_collision(piece.cells)) {
         piece.coreCoord.x -= 1;
+        piece.updateCells();
+
+        return false;
+      }
+
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  // Public Methods
+
+  var movePieceDown = function movePieceDown() {
+    if (piece.coreCoord.y < (boardEdges.bottom - 1)) {
+      piece.coreCoord.y += 1;
+      piece.updateCells();
+
+      if (_collision(piece.cells)) {
+        piece.coreCoord.y -= 1;
         piece.updateCells();
 
         return false;
@@ -187,14 +205,15 @@ TETRIS.Data = (function() {
 
   var keyPressMovePiece = function keyPressMovePiece(){
     if (keys[40]) { // down arrow
-      // exports.movePieceDown();
+      if (movePieceDown())
+        return "down";
     }
     if (keys[39]) { // right arrow
-      if (movePieceRight())
+      if (_movePieceRight())
         return "right";
     }
     if (keys[37]) { // left arrow
-      if (movePieceLeft())
+      if (_movePieceLeft())
         return "left";
     }
     return false;
