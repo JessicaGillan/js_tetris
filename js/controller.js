@@ -5,26 +5,27 @@ TETRIS.Controller = (function(Data,View) {
   var SPEED = 300;
 
   var _gameLoop = function() {
-    var direction = Data.keyPressMovePiece();
 
-    if (direction === "right") {
-      View.movePieceRight();
-    } else if (direction === "left") {
-      View.movePieceLeft();
-    } else if (direction === "down") {
-      View.movePieceDown();
-    }
+    // if (direction === "right") {
+    //   View.movePieceRight();
+    // } else if (direction === "left") {
+    //   View.movePieceLeft();
+    // } else if (direction === "down") {
+    //   View.movePieceDown();
+    // } else if (direction === "rotateR") {
+    //   View.rotatePieceR();
+    // }
 
-    if (Data.movePieceDown()) {
-      View.movePieceDown();
+    if (Data.movePieceDown() || Data.keyPressMovePiece()) {
+      // View.movePieceDown();
     } else {
       // if we have full Rows
       if (Data.hitBottom()){
-        View.renderBoard(Data.getBoard());
         View.updateScore(Data.getScore());
       }
-      View.addPiece(Data.getActivePiece());
+      // View.addPiece(Data.getActivePiece());
     }
+    View.renderBoard(Data.getBoard());
   };
 
 
@@ -35,10 +36,9 @@ TETRIS.Controller = (function(Data,View) {
       keydown: Data.startKey,
       keyup: Data.stopKey,
     });
-    View.renderBoard(Data.getBoard());
+    View.renderBoard(Data.getBoard(), 20, 15);
 
     Data.addPiece();
-    View.addPiece(Data.getActivePiece());
 
     setInterval( _gameLoop, SPEED);
   }

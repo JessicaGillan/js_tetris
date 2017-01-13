@@ -68,7 +68,7 @@ TETRIS.View = (function() {
     for(var i = 0; i < piece.cells.length; i++) {
       group.add(_drawSquare(piece.cells[i]));
     }
-
+    // group.center();
     two.update();
   };
 
@@ -87,6 +87,11 @@ TETRIS.View = (function() {
     two.update();
   };
 
+  var rotatePieceR = function() {
+    group.rotation += Math.PI/2;
+    two.update();
+  };
+
   return {
             init: init,
             renderBoard: renderBoard,
@@ -94,6 +99,7 @@ TETRIS.View = (function() {
             updateScore: updateScore,
             movePieceRight: movePieceRight,
             movePieceLeft: movePieceLeft,
-            movePieceDown: movePieceDown
+            movePieceDown: movePieceDown,
+            rotatePieceR: rotatePieceR
          };
 })();

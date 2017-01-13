@@ -1,3 +1,44 @@
-#canvas {
-  margin: auto;
+
+* {
+  box-sizing: border-box;
+}
+tetris {
+  width: 75vw;
+  margin: 20px 0;
+  display: block;
+  position: relative;
+}
+
+tetris .cell {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #bbb;
+  padding: 0;
+  margin: 0;
+  background-color: black;
+  transition: all 1s ease;
+  position: absolute;
+}
+
+tetris .cell.yellow {
+  background-color: yellow;
+}
+tetris .cell.cyan {
+  background-color: cyan;
+}
+tetris .cell.red {
+  background-color: red;
+}
+tetris .cell.green {
+  background-color: green;
+}
+tetris .cell.orange {
+  background-color: orange;
+}
+tetris .cell.pink {
+  background-color: pink;
+}
+tetris .cell.purple {
+  background-color: purple;
 }
