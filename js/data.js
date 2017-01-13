@@ -231,7 +231,6 @@ TETRIS.Data = (function() {
 
         return false;
       }
-      _updateBoard();
 
       return true;
     } else {
@@ -251,7 +250,6 @@ TETRIS.Data = (function() {
 
         return false;
       }
-      _updateBoard();
 
       return true;
     } else {
@@ -283,7 +281,6 @@ TETRIS.Data = (function() {
       piece.rotateL();
       return false;
     }
-    _updateBoard();
 
     return true;
   };
@@ -302,7 +299,6 @@ TETRIS.Data = (function() {
 
         return false;
       }
-      _updateBoard();
 
       return true;
     } else {
@@ -347,7 +343,6 @@ TETRIS.Data = (function() {
     var middle = Math.floor(boardEdges.right/2) - 1;
     piece = new Piece((new Coord(middle,0)), SHAPES[key], SHAPES[key].color);
 
-    _updateBoard();
     return piece;
   };
 
@@ -373,8 +368,30 @@ TETRIS.Data = (function() {
     return piece;
   }
 
+ // TODO fix this!!!///////////////////
+  var _putPOnBoard = function _putPOnBoard(boardCopy) {
+    for (var i = 0; i < piece.cells.length; i++) {
+      boardCopy = updateCopyCell(piece.cells[i], boardCopy);
+    }
+
+    return boardCopy;
+  };
+
+  var updateCopyCell = function updateCopyCell(coord, boardCopy) {
+    var cell = coord.x + "_" + coord.y;
+
+    if (boardCopy[cell]) { // if cell is on board
+      boardCopy[cell] = coord;
+
+    }
+
+    return boardCopy;
+  };
+  // TODO fix this!!!///////////////////
+
   var getBoard = function getBoard() {
-    return board;
+
+    return _putPOnBoard(board);
   }
 
   var getScore = function getScore(){

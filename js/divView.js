@@ -19,7 +19,7 @@ TETRIS.View = (function() {
     }
   };
 
-  var renderBoard = function renderBoard(board, h,w) {
+  var renderBoard = function renderBoard(board, piece, h,w) {
     gameWrapper.innerHTML = "";
     var size = CELL_SIDE;
 
@@ -31,7 +31,7 @@ TETRIS.View = (function() {
 
       if (board[coord].value) {
         cell.classList.add(board[coord].value)
-      };
+      }
 
       cell.style.height = size;
       cell.style.width = size;

@@ -25,7 +25,7 @@ TETRIS.Controller = (function(Data,View) {
       }
       // View.addPiece(Data.getActivePiece());
     }
-    View.renderBoard(Data.getBoard());
+    View.renderBoard(Data.getBoard(), 20, 15);
   };
 
 
@@ -36,9 +36,10 @@ TETRIS.Controller = (function(Data,View) {
       keydown: Data.startKey,
       keyup: Data.stopKey,
     });
+    Data.addPiece();
     View.renderBoard(Data.getBoard(), 20, 15);
 
-    Data.addPiece();
+
 
     setInterval( _gameLoop, SPEED);
   }
