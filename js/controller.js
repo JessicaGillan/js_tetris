@@ -6,16 +6,7 @@ TETRIS.Controller = (function(Data,View) {
 
   var _gameLoop = function() {
 
-    // if (direction === "right") {
-    //   View.movePieceRight();
-    // } else if (direction === "left") {
-    //   View.movePieceLeft();
-    // } else if (direction === "down") {
-    //   View.movePieceDown();
-    // } else if (direction === "rotateR") {
-    //   View.rotatePieceR();
-    // }
-
+    // TODO: second part of or is no getting executed, FIX!
     if (Data.movePieceDown() || Data.keyPressMovePiece()) {
       // View.movePieceDown();
     } else {
@@ -23,23 +14,28 @@ TETRIS.Controller = (function(Data,View) {
       if (Data.hitBottom()){
         View.updateScore(Data.getScore());
       }
-      // View.addPiece(Data.getActivePiece());
     }
-    View.renderBoard(Data.getBoard(), 20, 15);
+
+    // TODO: Optimize to just clear last piece position and add new
+    // piece posisition unless hit bottom, then re-render board
+    View.renderBoard(Data.getBoard());
+    View.renderPiece(Data.getActivePiece());
   };
 
 
-  var init = function init() {
+  var init = function init(h,w) {
+    h = h || 20;
+    w = w || 10;
+
     // Run Initialization
-    Data.init(20, 15);
-    View.init({
+    Data.init(h, w);
+    View.init(h, w, {
       keydown: Data.startKey,
       keyup: Data.stopKey,
     });
-    Data.addPiece();
-    View.renderBoard(Data.getBoard(), 20, 15);
 
-
+    View.renderBoard(Data.getBoard());
+    View.renderPiece(Data.getActivePiece());
 
     setInterval( _gameLoop, SPEED);
   }

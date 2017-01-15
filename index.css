@@ -9,7 +9,7 @@ tetris {
   position: relative;
 }
 
-tetris .cell {
+tetris .square {
   display: inline-block;
   width: 30px;
   height: 30px;
@@ -21,24 +21,24 @@ tetris .cell {
   position: absolute;
 }
 
-tetris .cell.yellow {
+tetris .square.yellow {
   background-color: yellow;
 }
-tetris .cell.cyan {
+tetris .square.cyan {
   background-color: cyan;
 }
-tetris .cell.red {
+tetris .square.red {
   background-color: red;
 }
-tetris .cell.green {
+tetris .square.green {
   background-color: green;
 }
-tetris .cell.orange {
+tetris .square.orange {
   background-color: orange;
 }
-tetris .cell.pink {
+tetris .square.pink {
   background-color: pink;
 }
-tetris .cell.purple {
+tetris .square.purple {
   background-color: purple;
 }

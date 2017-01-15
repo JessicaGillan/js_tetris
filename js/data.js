@@ -39,27 +39,32 @@ TETRIS.Data = (function() {
 
   var Piece = function Piece(startingCoord, shape, color) {
     this.coreCoord = startingCoord;
-    this.orientation = "right";
+    this.orientation = "up";
     this.transformation = shape.cells;
     this.leftMost = startingCoord;
     this.rightMost = startingCoord;
     this.topMost = startingCoord;
     this.bottomMost = startingCoord;
-    this.updateCells = function updateCells() {
-      var array = [];
-      for (var i = 0; i < shape.cells.length; i++) {
-        var coords = this.transform(this.transformation[i]);
-        var newCoord = new Coord(coords[0], coords[1], color);
-
-        this.updateEdges(newCoord);
-
-        array.push(newCoord);
-      }
-      this.cells = array;
-    };
+    this.color = color;
 
     this.updateCells(); // Update the cells on creation
-    this.color = color;
+  };
+
+  Piece.prototype.updateCells = function updateCells() {
+    var array = [],
+        i = 0,
+        coords,
+        newCoord;
+
+    for ( ; i < this.transformation.length; i++) {
+      coords = this.transform(this.transformation[i]);
+      newCoord = new Coord(coords[0], coords[1], this.color);
+
+      this.updateEdges(newCoord);
+
+      array.push(newCoord);
+    }
+    this.cells = array;
   };
 
   Piece.prototype.transform = function transform(offsets){
@@ -125,7 +130,7 @@ TETRIS.Data = (function() {
   };
 
   var _updateCell = function _updateCell(coord) {
-    var cell = coord.x + "_" + coord.y;
+    var cell = TETRIS.getKey(coord.x,coord.y);
 
     if (board[cell]) { // if cell is on board
       board[cell] = coord;
@@ -191,9 +196,11 @@ TETRIS.Data = (function() {
   }
 
   var _collision = function _collision(cells) {
-    var collide = false;
+    var collide = false,
+        cellKey;
+
     for (var i = 0; i < cells.length; i++) {
-      var cellKey = cells[i].x + "_" + cells[i].y;
+      cellKey = TETRIS.getKey(cells[i].x,cells[i].y);
 
       if (board[cellKey]) {
         if (board[cellKey].value) collide = true;
@@ -321,6 +328,7 @@ TETRIS.Data = (function() {
         return "down";
     }
     if (keys[39]) { // right arrow
+      console.log("move Right!")
       if (_movePieceRight())
         return "right";
     }
@@ -368,30 +376,9 @@ TETRIS.Data = (function() {
     return piece;
   }
 
- // TODO fix this!!!///////////////////
-  var _putPOnBoard = function _putPOnBoard(boardCopy) {
-    for (var i = 0; i < piece.cells.length; i++) {
-      boardCopy = updateCopyCell(piece.cells[i], boardCopy);
-    }
-
-    return boardCopy;
-  };
-
-  var updateCopyCell = function updateCopyCell(coord, boardCopy) {
-    var cell = coord.x + "_" + coord.y;
-
-    if (boardCopy[cell]) { // if cell is on board
-      boardCopy[cell] = coord;
-
-    }
-
-    return boardCopy;
-  };
-  // TODO fix this!!!///////////////////
-
   var getBoard = function getBoard() {
 
-    return _putPOnBoard(board);
+    return board;
   }
 
   var getScore = function getScore(){
@@ -400,6 +387,8 @@ TETRIS.Data = (function() {
 
   var init = function init(height, width) {
     board = _newBoard(height, width);
+    TETRIS.getKey(1,2);
+    addPiece();
   };
 
   return {

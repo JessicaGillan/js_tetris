@@ -1,9 +1,12 @@
 var TETRIS = TETRIS || {};
-TETRIS.View = (function() {
-  var CELL_SIDE = 30;
 
-  var gameWrapper = document.getElementsByTagName('tetris')[0];
-  var score = document.getElementById('score');
+TETRIS.View = (function() {
+  var CELL_SIDE = 30,
+      gameWrapper = document.getElementsByTagName('tetris')[0],
+      score = document.getElementById('score');
+
+  var height, width;
+
 
   var _addListeners = function _addListeners(listeners) {
     listeners = listeners || {};
@@ -19,31 +22,46 @@ TETRIS.View = (function() {
     }
   };
 
-  var renderBoard = function renderBoard(board, piece, h,w) {
+  var renderBoard = function renderBoard(board) {
+    var size = CELL_SIDE,
+        square;
+
     gameWrapper.innerHTML = "";
-    var size = CELL_SIDE;
 
-
-    var cell;
     for(coord in board) {
-      cell = document.createElement('DIV');
-      cell.classList.add('cell');
+      square = document.createElement('DIV');
+      square.classList.add('square');
+      square.id = coord;
 
       if (board[coord].value) {
-        cell.classList.add(board[coord].value)
+        square.classList.add(board[coord].value)
       }
 
-      cell.style.height = size;
-      cell.style.width = size;
-      cell.style.top = board[coord].y*size + "px";
-      cell.style.left = board[coord].x*size + "px";
+      square.style.height = size;
+      square.style.width = size;
+      square.style.top = board[coord].y*size + "px";
+      square.style.left = board[coord].x*size + "px";
 
-      gameWrapper.appendChild(cell);
+      gameWrapper.appendChild(square);
     }
   }
 
+  var renderPiece = function renderPiece(piece) {
+    var i = 0,
+        square;
 
-  var init = function init(listeners) {
+    for ( ; i < piece.cells.length; i++) {
+      id = TETRIS.getKey(piece.cells[i].x, piece.cells[i].y);
+      square = document.getElementById(id);
+
+      // if square is on board
+      if (square) square.classList.add(piece.cells[i].value);
+    }
+  };
+
+  var init = function init(h,w,listeners) {
+    height = h;
+    width = w;
     _addListeners(listeners);
   };
 
@@ -54,6 +72,7 @@ TETRIS.View = (function() {
   return {
             init: init,
             renderBoard: renderBoard,
+            renderPiece: renderPiece,
             updateScore: updateScore
             // addPiece: addPiece,
             // movePieceRight: movePieceRight,
