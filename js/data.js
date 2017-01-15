@@ -26,11 +26,11 @@ TETRIS.Data = (function() {
   var SHAPES = {
     // win: new Shape([[0,0],[1,0],[2,0], [3,0], [4,0], [5,0], [-1,0], [-2,0],[-3,0], [-4,0]], "yellow")
     o: new Shape([[0,0],[1, 0],[0, -1], [1,-1]], "yellow"),
-    i: new Shape([[0,0],[0,-1],[0, -2], [0,-3]], "cyan"),
-    s: new Shape([[0,0],[1, 0],[1, -1], [2,-1]], "red"),
+    i: new Shape([[0,0],[0, 1],[0, -1], [0,-2]], "cyan"),
+    s: new Shape([[0,0],[-1, 0],[0, -1], [1,-1]], "red"),
     z: new Shape([[0,0],[1, 0],[-1,-1],[0,-1]], "green"),
     l: new Shape([[0,0],[1, 0],[0, -1],[0,-2]], "orange"),
-    j: new Shape([[0,0],[1, 0],[1, -1],[1,-2]], "pink"),
+    j: new Shape([[0,0],[-1, 0],[0, -1],[0,-2]], "pink"),
     t: new Shape([[0,0],[-1,-1],[0,-1],[1,-1]], "purple")
   };
 
@@ -51,13 +51,19 @@ TETRIS.Data = (function() {
   };
 
   Piece.prototype.updateCells = function updateCells() {
-    var array = [],
+    var transform = (this.transformation !== SHAPES.o.cells), // Don't rotate 'o'
+        array = [],
         i = 0,
         coords,
         newCoord;
 
     for ( ; i < this.transformation.length; i++) {
-      coords = this.transform(this.transformation[i]);
+      if (transform) {
+        coords = this.transform(this.transformation[i]);
+      } else {
+        coords = [this.coreCoord.x + this.transformation[i][0], this.coreCoord.y + this.transformation[i][1]];
+      }
+
       newCoord = new Coord(coords[0], coords[1], this.color);
 
       this.updateEdges(newCoord);
@@ -73,13 +79,13 @@ TETRIS.Data = (function() {
         return [this.coreCoord.x + offsets[0], this.coreCoord.y + offsets[1]]
         break;
       case "down":
-      return [this.coreCoord.x + offsets[0], -1*(this.coreCoord.y + offsets[1])]
+      return [this.coreCoord.x + offsets[0], this.coreCoord.y - offsets[1]]
         break;
       case "right":
         return [this.coreCoord.x + offsets[1], this.coreCoord.y + offsets[0]]
         break;
       case "left":
-        return [-1*(this.coreCoord.x + offsets[1]), this.coreCoord.y + offsets[0]]
+        return [this.coreCoord.x - offsets[1], this.coreCoord.y + offsets[0]]
         break;
       default:
         return [this.coreCoord.x + offsets[0], this.coreCoord.y + offsets[1]]
@@ -102,19 +108,13 @@ TETRIS.Data = (function() {
   Piece.prototype.rotateR = function rotateR() {
     this.orientation = ROTATE_R[this.orientation];
 
-    // this.coreCoord.x -= 1;
-    // this.coreCoord.y += 1;
-
-    this.updateCells;
+    this.updateCells();
   }
 
   Piece.prototype.rotateL = function rotateL() {
     this.orientation = ROTATE_L[this.orientation];
 
-    // this.coreCoord.x -= 1;
-    // this.coreCoord.y += 1;
-
-    this.updateCells;
+    this.updateCells();
   }
 
   // Private Methods
@@ -196,20 +196,19 @@ TETRIS.Data = (function() {
   }
 
   var _collision = function _collision(cells) {
-    var collide = false,
-        cellKey;
+    var cellKey;
 
     for (var i = 0; i < cells.length; i++) {
       cellKey = TETRIS.getKey(cells[i].x,cells[i].y);
 
       if (board[cellKey]) {
-        if (board[cellKey].value) collide = true;
+        if (board[cellKey].value) return true;
       } else {
         return false;
       }
     }
 
-    return collide;
+    return false;
   };
 
   var _newBoard = function _newBoard(h,w) {
@@ -296,7 +295,7 @@ TETRIS.Data = (function() {
 
   var movePieceDown = function movePieceDown(by) {
     by = by || 1;
-    if (piece.bottomMost.y < (boardEdges.bottom - 1)) {
+    if (piece.bottomMost.y < (boardEdges.bottom - by)) {
       piece.coreCoord.y += by;
       piece.updateCells();
 
@@ -322,27 +321,24 @@ TETRIS.Data = (function() {
   };
 
   var keyPressMovePiece = function keyPressMovePiece(){
-    // TODO fix this to handle hit bottom logic, much bugs right now
     if (keys[40]) { // down arrow
-      if (movePieceDown(3))
-        return "down";
+      movePieceDown(2);
+
+    } else if (keys[39]) { // right arrow
+      _movePieceRight();
+
+    } else if (keys[37]) { // left arrow
+      _movePieceLeft();
+
+    } else if (keys[38]) { // up arrow = rotate right
+      _rotatePieceRight();
+
+    } else if(keys[32]) { // spacebar = hard drop
+      var inc = 3;
+      while(movePieceDown(inc)){}
+      while(movePieceDown(inc-1)){}
+      keys[32] = false;
     }
-    if (keys[39]) { // right arrow
-      console.log("move Right!")
-      if (_movePieceRight())
-        return "right";
-    }
-    if (keys[37]) { // left arrow
-      if (_movePieceLeft())
-        return "left";
-    }
-    if (keys[38]) { // up arrow
-      if (_rotatePieceRight())
-        return "rotateR";
-    }
-    return false;
-    //  if(this.keys[32]){ // spacebar
-    //  }
   };
 
   var addPiece = function addPiece() {

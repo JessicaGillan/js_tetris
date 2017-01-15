@@ -5,12 +5,11 @@ TETRIS.Controller = (function(Data,View) {
   var SPEED = 300;
 
   var _gameLoop = function() {
+    Data.keyPressMovePiece()
 
-    // TODO: second part of or is no getting executed, FIX!
-    if (Data.movePieceDown() || Data.keyPressMovePiece()) {
-      // View.movePieceDown();
-    } else {
-      // if we have full Rows
+    // If can't move piece down, run "hitBottom"
+    if (!Data.movePieceDown()) {
+      // if we have full Rows, update score
       if (Data.hitBottom()){
         View.updateScore(Data.getScore());
       }
