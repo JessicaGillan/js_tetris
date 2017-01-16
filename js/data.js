@@ -6,7 +6,8 @@ TETRIS.Data = (function() {
       piece,
       board,
       boardEdges,
-      score = 0;
+      score = 0,
+      gameOver = false;
 
   // Constructors
 
@@ -136,6 +137,7 @@ TETRIS.Data = (function() {
       board[cell] = coord;
       return true;
     } else {
+      gameOver = true;
       return false;
     }
   };
@@ -381,6 +383,10 @@ TETRIS.Data = (function() {
     return score;
   }
 
+  var getGameOver = function getGameOver() {
+    return gameOver;
+  }
+
   var init = function init(height, width) {
     board = _newBoard(height, width);
     TETRIS.getKey(1,2);
@@ -389,6 +395,7 @@ TETRIS.Data = (function() {
 
   return {
            init: init,
+           getGameOver: getGameOver,
            getActivePiece: getActivePiece,
            getBoard: getBoard,
            getScore: getScore,

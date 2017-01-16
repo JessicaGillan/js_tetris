@@ -2,7 +2,8 @@ var TETRIS = TETRIS || {};
 TETRIS.Controller = (function(Data,View) {
   'use strict';
 
-  var SPEED = 300;
+  var SPEED = 300,
+      gameLoop;
 
   var _gameLoop = function() {
     Data.keyPressMovePiece()
@@ -15,11 +16,22 @@ TETRIS.Controller = (function(Data,View) {
       }
     }
 
+    if(Data.getGameOver()){
+      console.log("GAME OVER!")
+      gameOver();
+      clearInterval(gameLoop);
+      return;
+    }
+
     // TODO: Optimize to just clear last piece position and add new
     // piece posisition unless hit bottom, then re-render board
     View.renderBoard(Data.getBoard());
     View.renderPiece(Data.getActivePiece());
   };
+
+  var gameOver = function gameOver(){
+    View.gameOver();
+  }
 
 
   var init = function init(h,w) {
@@ -36,7 +48,7 @@ TETRIS.Controller = (function(Data,View) {
     View.renderBoard(Data.getBoard());
     View.renderPiece(Data.getActivePiece());
 
-    setInterval( _gameLoop, SPEED);
+    gameLoop = setInterval( _gameLoop, SPEED);
   }
 
   return {

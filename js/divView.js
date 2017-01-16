@@ -41,6 +41,7 @@ TETRIS.View = (function() {
       square.style.width = size;
       square.style.top = board[coord].y*size + "px";
       square.style.left = board[coord].x*size + "px";
+      square.style.zIndex = '0';
 
       gameWrapper.appendChild(square);
     }
@@ -69,11 +70,22 @@ TETRIS.View = (function() {
     score.innerText = "Score: " + num;
   }
 
+  var gameOver = function gameOver(){
+    var end = document.createElement('H1');
+    end.style.font = "10vh Verdana";
+    end.style.color = 'red';
+    end.style.position = 'relative';
+    end.style.zIndex = '10';
+    end.innerText = "Game Over";
+
+    gameWrapper.appendChild(end);
+  }
   return {
             init: init,
             renderBoard: renderBoard,
             renderPiece: renderPiece,
-            updateScore: updateScore
+            updateScore: updateScore,
+            gameOver: gameOver
             // addPiece: addPiece,
             // movePieceRight: movePieceRight,
             // movePieceLeft: movePieceLeft,
