@@ -4,8 +4,8 @@
 }
 /* TODO: push this center to overlay Game over*/
 tetris {
-  width: 75vw;
-  margin: 20px 0;
+  width: 300;
+  margin: auto;
   display: block;
   position: relative;
 }

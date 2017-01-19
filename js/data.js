@@ -3,6 +3,8 @@ TETRIS.Data = (function() {
   "use strict";
 
   var keys = {},
+      height,
+      width,
       piece,
       board,
       boardEdges,
@@ -266,7 +268,7 @@ TETRIS.Data = (function() {
   };
 
   var _increaseScore = function _increaseScore(amount) {
-    amount = amount || 1;
+    amount = amount || 10;
     score += amount;
     console.log(score);
   }
@@ -375,22 +377,29 @@ TETRIS.Data = (function() {
   }
 
   var getBoard = function getBoard() {
-
     return board;
   }
 
   var getScore = function getScore(){
     return score;
-  }
+  };
 
   var getGameOver = function getGameOver() {
     return gameOver;
-  }
+  };
 
-  var init = function init(height, width) {
+  var reset = function reset() {
+    score = 0;
+    gameOver = false;
     board = _newBoard(height, width);
-    TETRIS.getKey(1,2);
     addPiece();
+  };
+
+  var init = function init(h, w) {
+    height = h;
+    width = w;
+
+    reset();
   };
 
   return {
@@ -404,6 +413,7 @@ TETRIS.Data = (function() {
            movePieceDown: movePieceDown,
            hitBottom: hitBottom,
            startKey: startKey,
-           stopKey: stopKey
+           stopKey: stopKey,
+           reset: reset
          };
 })();

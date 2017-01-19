@@ -3,7 +3,8 @@ var TETRIS = TETRIS || {};
 TETRIS.View = (function() {
   var CELL_SIDE = 30,
       gameWrapper = document.getElementsByTagName('tetris')[0],
-      score = document.getElementById('score');
+      score = document.getElementById('score'),
+      startBtn = document.getElementById('start');
 
   var height, width;
 
@@ -16,8 +17,15 @@ TETRIS.View = (function() {
       document.body.addEventListener('keydown', function(e) {
         listeners.keydown(e.which || e.keycode);
       });
+    }
+    if (listeners.keyup) {
       document.body.addEventListener('keyup', function(e) {
         listeners.keyup(e.which || e.keycode);
+      });
+    }
+    if (listeners.startGame) {
+      startBtn.addEventListener('click', function(e) {
+        listeners.startGame(e);
       });
     }
   };
@@ -70,26 +78,15 @@ TETRIS.View = (function() {
     score.innerText = "Score: " + num;
   }
 
-  var gameOver = function gameOver(){
-    var end = document.createElement('H1');
-    end.style.font = "10vh Verdana";
-    end.style.color = 'red';
-    end.style.position = 'relative';
-    end.style.zIndex = '10';
-    end.innerText = "Game Over";
-
-    gameWrapper.appendChild(end);
+  var gameOver = function gameOver(score){
+    alert("Game Over. You scored " + score + " points.")
   }
+
   return {
             init: init,
             renderBoard: renderBoard,
             renderPiece: renderPiece,
             updateScore: updateScore,
             gameOver: gameOver
-            // addPiece: addPiece,
-            // movePieceRight: movePieceRight,
-            // movePieceLeft: movePieceLeft,
-            // movePieceDown: movePieceDown,
-            // rotatePieceR: rotatePieceR
          };
 })();

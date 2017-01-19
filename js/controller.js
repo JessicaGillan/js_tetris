@@ -17,7 +17,6 @@ TETRIS.Controller = (function(Data,View) {
     }
 
     if(Data.getGameOver()){
-      console.log("GAME OVER!")
       gameOver();
       clearInterval(gameLoop);
       return;
@@ -30,9 +29,20 @@ TETRIS.Controller = (function(Data,View) {
   };
 
   var gameOver = function gameOver(){
-    View.gameOver();
+    View.gameOver(Data.getScore());
   }
 
+  var startGame = function startGame(e){
+    e.preventDefault();
+    clearInterval(gameLoop);
+
+    Data.reset();
+
+    View.renderBoard(Data.getBoard());
+    View.renderPiece(Data.getActivePiece());
+
+    gameLoop = setInterval( _gameLoop, SPEED);
+  }
 
   var init = function init(h,w) {
     h = h || 20;
@@ -43,12 +53,10 @@ TETRIS.Controller = (function(Data,View) {
     View.init(h, w, {
       keydown: Data.startKey,
       keyup: Data.stopKey,
+      startGame: startGame
     });
 
     View.renderBoard(Data.getBoard());
-    View.renderPiece(Data.getActivePiece());
-
-    gameLoop = setInterval( _gameLoop, SPEED);
   }
 
   return {
@@ -57,4 +65,6 @@ TETRIS.Controller = (function(Data,View) {
 
 })(TETRIS.Data, TETRIS.View);
 
-TETRIS.Controller.init();
+$(document).ready( function() {
+  TETRIS.Controller.init();
+});
