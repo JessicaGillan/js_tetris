@@ -2,7 +2,7 @@ var TETRIS = TETRIS || {};
 TETRIS.Controller = (function(Data,View) {
   'use strict';
 
-  var SPEED = 300,
+  var SPEED = 400,
       gameLoop;
 
   var _gameLoop = function() {
