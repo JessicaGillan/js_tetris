@@ -161,7 +161,6 @@ TETRIS.Data = (function() {
         }
       }
       if (fullRow) {
-        console.log("full row!!!");
         fullRows.push(y);
       }
       y--;
@@ -268,9 +267,9 @@ TETRIS.Data = (function() {
   };
 
   var _increaseScore = function _increaseScore(amount) {
-    amount = amount || 10;
-    score += amount;
-    console.log(score);
+    amount = amount || 1;
+
+    score += amount*10;
   }
 
   var _rotatePieceLeft = function _rotatePieceLeft() {
@@ -285,9 +284,8 @@ TETRIS.Data = (function() {
 
   var _rotatePieceRight = function _rotatePieceRight() {
     piece.rotateR();
-    console.log("rotated r", piece.cells);
+
     if (_collision(piece.cells)) {
-      console.log("rotated back l", piece.cells);
       piece.rotateL();
       return false;
     }

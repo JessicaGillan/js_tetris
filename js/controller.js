@@ -38,6 +38,7 @@ TETRIS.Controller = (function(Data,View) {
 
     Data.reset();
 
+    View.updateScore(Data.getScore());
     View.renderBoard(Data.getBoard());
     View.renderPiece(Data.getActivePiece());
 
