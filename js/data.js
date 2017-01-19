@@ -387,6 +387,7 @@ TETRIS.Data = (function() {
   };
 
   var reset = function reset() {
+    keys = {};
     score = 0;
     gameOver = false;
     board = _newBoard(height, width);
