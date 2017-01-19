@@ -14,12 +14,12 @@ TETRIS.Controller = (function(Data,View) {
       if (Data.hitBottom()){
         View.updateScore(Data.getScore());
       }
-    }
 
-    if(Data.getGameOver()){
-      gameOver();
-      clearInterval(gameLoop);
-      return;
+      if(Data.getGameOver()){
+        gameOver();
+        clearInterval(gameLoop);
+        return;
+      }
     }
 
     // TODO: Optimize to just clear last piece position and add new

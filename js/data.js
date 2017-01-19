@@ -341,6 +341,7 @@ TETRIS.Data = (function() {
       var inc = 3;
       while(movePieceDown(inc)){}
       while(movePieceDown(inc-1)){}
+      while(movePieceDown(inc-2)){}
       keys[32] = false;
     }
   };
