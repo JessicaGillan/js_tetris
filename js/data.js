@@ -336,10 +336,9 @@ TETRIS.Data = (function() {
       _rotatePieceRight();
 
     } else if(keys[32]) { // spacebar = hard drop
-      var inc = 3;
+      var inc = 2;
       while(movePieceDown(inc)){}
       while(movePieceDown(inc-1)){}
-      while(movePieceDown(inc-2)){}
       keys[32] = false;
     }
   };
